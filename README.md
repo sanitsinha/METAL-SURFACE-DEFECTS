@@ -141,12 +141,3 @@ Comparison between ML and DL models highlights trade-offs between:
 ```
 
 ---
-
-## 👤 Author
-
-**Sanit Sinha**
-
-* IIT Patna
-* Interests: Machine Learning, Deep Learning, Systems
-
----
