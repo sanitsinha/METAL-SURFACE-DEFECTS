@@ -132,12 +132,6 @@ Comparison between ML and DL models highlights trade-offs between:
 
 ---
 
-## 📁 Project Structure
 
-```bash
-├── data/
-├── metals_analysis.ipynb
-├── README.md
-```
 
 ---
