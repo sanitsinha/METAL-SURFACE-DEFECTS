@@ -1,137 +1,480 @@
-# 🧠 Metals Intelligence: ML & Deep Learning on Material Data
+# Metal Surface Defect Classification using CNN
 
-## 🚀 Overview
+A deep learning project for **automatic classification of metal surface defects from grayscale images** using a Convolutional Neural Network (CNN) built with TensorFlow/Keras.
 
-This project explores the intersection of **materials science and machine learning**, where data-driven techniques are used to analyze and predict properties of metals.
-
-Rather than relying solely on traditional experimental approaches, this project leverages **ML/DL models** to learn patterns in metal behavior and enable predictive insights.
+The project uses image preprocessing, data augmentation, batch normalization, convolutional feature extraction, global average pooling, and softmax classification to identify six different types of metal surface defects.
 
 ---
 
-## 🎯 Problem Statement
+## 📌 Project Overview
 
-Metals exhibit complex relationships between their structural, physical, and mechanical properties.
-The objective of this project is to:
+Manual inspection of metal surfaces for defects can be time-consuming and subjective. This project explores a computer-vision-based approach in which a CNN learns visual patterns associated with different surface defects and predicts the defect class of a new image.
 
-* Model these relationships using **machine learning algorithms**
-* Predict target properties based on input features
-* Explore whether **deep learning (CNNs)** can capture deeper feature interactions
+### Defect Classes
+
+The model classifies images into six categories:
+
+1. **Crazing**
+2. **Inclusion**
+3. **Patches**
+4. **Pitted**
+5. **Rolled**
+6. **Scratches**
 
 ---
 
-## 🧬 Domain Context (Metals)
+## 👥 Team
 
-Metal properties such as strength, hardness, and durability depend on multiple factors like composition and structure.
+**Group 17**
 
-This project treats these properties as a **data-driven problem**, where:
-
-* Each metal sample → a feature vector
-* Each property → a prediction target
+- Aman — 2301ME05
+- Sanit — 2301ME45
+- Sparsh — 2301ME47
 
 ---
 
 ## 🗂️ Dataset
 
-Structured dataset containing multiple features representing metal characteristics.
+The notebook uses the **Metal Surface Defects Data** dataset in a Kaggle environment.
 
-### Preprocessing Pipeline:
-
-* Missing value imputation
-* Feature normalization / scaling
-* Encoding categorical features (if present)
-* Train-test split
-
----
-
-## 🛠️ Tech Stack
-
-* **Language:** Python
-* **Libraries:**
-
-  * `pandas`, `numpy`
-  * `matplotlib`, `seaborn`
-  * `scikit-learn` (ML models)
-  * `tensorflow` / `keras` or `pytorch` (for CNNs, if used)
-
----
-
-## ⚙️ ML & DL Pipeline
+The expected directory structure is:
 
 ```text
-Data → Preprocessing → Feature Engineering → Model Training → Evaluation → Prediction
+Metal Surface Defects Data/
+├── train/
+│   ├── Crazing/
+│   ├── Inclusion/
+│   ├── Patches/
+│   ├── Pitted/
+│   ├── Rolled/
+│   └── Scratches/
+└── test/
+    ├── Crazing/
+    ├── Inclusion/
+    ├── Patches/
+    ├── Pitted/
+    ├── Rolled/
+    └── Scratches/
+```
+
+In the notebook, the dataset is accessed from:
+
+```python
+/kaggle/input/metal-surface-defects-data/Metal Surface Defects Data
+```
+
+### Dataset split used in the notebook
+
+The notebook creates the training/validation split from the training directory using an **80/20 validation split**.
+
+The generator reported:
+
+- **1,326 training images**
+- **330 validation images**
+- **72 test images**
+- **6 classes**
+
+The test set contains 12 images per class.
+
+---
+
+## 🔬 Methodology
+
+The overall workflow is:
+
+```text
+Metal Surface Images
+        │
+        ▼
+Image Loading
+        │
+        ▼
+Resize to 200 × 200
+        │
+        ▼
+Convert to Grayscale
+        │
+        ▼
+Normalize Pixel Values
+        │
+        ▼
+Data Augmentation
+        │
+        ▼
+CNN Feature Extraction
+        │
+        ▼
+Global Average Pooling
+        │
+        ▼
+Dropout
+        │
+        ▼
+Softmax Classification
+        │
+        ▼
+Predicted Defect Class
 ```
 
 ---
 
-## 🤖 Machine Learning Models
+## ⚙️ Image Preprocessing
 
-### 🔹 Regression Models
+Images are processed using Keras' `ImageDataGenerator`.
 
-Used to predict continuous metal properties:
+### Image parameters
 
-* Linear Regression
-* Decision Tree Regressor
-* Random Forest Regressor
+```python
+IMG_HEIGHT = 200
+IMG_WIDTH = 200
+BATCH_SIZE = 16
+```
 
-These models help establish **baseline performance** and interpretability.
+Images are converted to:
 
----
+```text
+200 × 200 × 1
+```
 
-## 🧠 Deep Learning Approach
+where the final dimension represents the single grayscale channel.
 
-### 🔹 Convolutional Neural Networks (CNNs)
+### Normalization
 
-Although CNNs are traditionally used for image data, they can be adapted for structured inputs to:
+Pixel values are rescaled using:
 
-* Capture **local feature interactions**
-* Learn **non-linear relationships**
-* Automatically extract hierarchical patterns
+```python
+rescale=1./255
+```
 
-CNN-based modeling was explored to compare performance against traditional ML methods.
+This converts the original pixel range from:
 
----
+```text
+0–255
+```
 
-## 📊 Evaluation Metrics
+to:
 
-* R² Score
-* Mean Squared Error (MSE)
-* Mean Absolute Error (MAE)
+```text
+0–1
+```
 
-Comparison between ML and DL models highlights trade-offs between:
+### Data augmentation
 
-* Interpretability (ML)
-* Representation power (DL)
+The training pipeline applies:
 
----
+- Rotation: up to 20°
+- Width shift: 10%
+- Height shift: 10%
+- Shearing: 10%
+- Zoom: 10%
+- Horizontal flipping
+- Nearest-neighbor filling
 
-## 📈 Results & Insights
+A 20% validation split is taken from the training directory.
 
-* Regression models provide stable and interpretable predictions
-* CNN models show potential in capturing complex feature interactions
-* Feature importance analysis reveals key variables influencing metal properties
-
-*(Add actual metrics for stronger impact)*
-
----
-
-## 🧩 Key Concepts Demonstrated
-
-* End-to-end ML pipeline design
-* Regression modeling for real-world data
-* Application of CNNs beyond traditional domains
-* Comparative analysis: ML vs Deep Learning
+The validation and test images are otherwise normalized without the training augmentation operations.
 
 ---
 
-## 🔮 Future Improvements
+## 🧠 CNN Architecture
 
-* Hyperparameter tuning for CNN architecture
-* Use of advanced models (XGBoost, Gradient Boosting)
-* Larger dataset for better generalization
-* Deployment as an API or interactive dashboard
+The project uses a sequential CNN consisting of three convolutional blocks followed by global average pooling and a six-class output layer.
+
+```text
+Input: 200 × 200 × 1
+
+        │
+        ▼
+Conv2D: 64 filters, 3×3, ReLU
+        │
+Batch Normalization
+        │
+Max Pooling: 2×2
+        │
+        ▼
+Conv2D: 128 filters, 3×3, ReLU
+        │
+Batch Normalization
+        │
+Max Pooling: 2×2
+        │
+        ▼
+Conv2D: 256 filters, 3×3, ReLU
+        │
+Batch Normalization
+        │
+Max Pooling: 2×2
+        │
+        ▼
+Global Average Pooling 2D
+        │
+        ▼
+Dropout: 0.5
+        │
+        ▼
+Dense: 6 neurons, Softmax
+```
+
+### Why Global Average Pooling?
+
+The notebook uses `GlobalAveragePooling2D()` instead of flattening the complete feature maps before the dense layer.
+
+This reduces the number of parameters and provides a more compact transition from convolutional feature maps to classification.
+
+### Regularization
+
+A dropout rate of **0.5** is applied before the final classification layer.
 
 ---
 
+## 🏋️ Training
 
+The model is compiled using:
+
+```python
+Adam(learning_rate=0.001)
+```
+
+with:
+
+```python
+loss = categorical_crossentropy
+metric = accuracy
+```
+
+The notebook trains the model for:
+
+```text
+60 epochs
+```
+
+using the augmented training generator and validation generator.
+
+The notebook was run using a Kaggle environment with an NVIDIA Tesla T4 GPU.
 
 ---
+
+## 📊 Results
+
+The notebook reports the following evaluation results.
+
+### Test-set evaluation
+
+The direct `model.evaluate(test_gen)` call reported approximately:
+
+```text
+Loss:     0.5082
+Accuracy: 80.56%
+```
+
+The subsequent classification report gives:
+
+```text
+Overall accuracy: 81%
+Macro F1-score:   0.78
+Weighted F1-score: 0.78
+```
+
+The notebook also reports a final validation accuracy of:
+
+```text
+89.09%
+```
+
+and a final training accuracy of:
+
+```text
+98.64%
+```
+
+> **Note:** These values come directly from different evaluation outputs in the notebook. The README intentionally preserves the reported results rather than treating them as a single reconciled benchmark.
+
+### Classification Report
+
+| Defect Class | Precision | Recall | F1-Score | Support |
+|---|---:|---:|---:|---:|
+| Crazing | 1.00 | 1.00 | 1.00 | 12 |
+| Inclusion | 0.86 | 1.00 | 0.92 | 12 |
+| Patches | 0.55 | 1.00 | 0.71 | 12 |
+| Pitted | 1.00 | 0.25 | 0.40 | 12 |
+| Rolled | 0.86 | 1.00 | 0.92 | 12 |
+| Scratches | 1.00 | 0.58 | 0.74 | 12 |
+
+### Confusion Matrix
+
+The notebook reports the following confusion matrix, with rows representing the true classes and columns representing predicted classes:
+
+```text
+[[12,  0,  0,  0,  0,  0],
+ [ 0, 12,  0,  0,  0,  0],
+ [ 0,  0, 12,  0,  0,  0],
+ [ 0,  2,  5,  3,  2,  0],
+ [ 0,  0,  0,  0, 12,  0],
+ [ 0,  0,  5,  0,  0,  7]]
+```
+
+The largest classification difficulties in this evaluation occur for **Pitted** and **Scratches**, with several Pitted samples being classified as other defect types and some Scratches being classified as Patches.
+
+---
+
+## 🧪 Single-Image Prediction
+
+The notebook also demonstrates inference on an individual image.
+
+The input image is:
+
+1. Loaded using PIL
+2. Converted to grayscale
+3. Resized to `200 × 200`
+4. Normalized by dividing by `255`
+5. Reshaped to `(1, 200, 200, 1)`
+6. Passed through the trained CNN
+
+The predicted class is obtained using:
+
+```python
+index = np.argmax(pred[0])
+```
+
+and mapped back to the defect name using the generator's class indices.
+
+For the example included in the notebook, the predicted class was:
+
+```text
+Crazing
+```
+
+---
+
+## 🛠️ Technologies Used
+
+- **Python**
+- **TensorFlow / Keras**
+- **NumPy**
+- **Pandas**
+- **Matplotlib**
+- **scikit-learn**
+- **PIL / Pillow**
+- **Jupyter Notebook**
+- **Kaggle GPU environment**
+
+---
+
+## 📁 Project Structure
+
+A recommended repository structure is:
+
+```text
+metal-surface-defect-classification/
+│
+├── metal_surface_analysis.ipynb
+├── README.md
+│
+├── images/
+│   └── training_history_plots.png
+│
+└── models/
+    └── trained_model.keras
+```
+
+The current project submission primarily contains the Jupyter notebook. Model files and generated plots can be added separately if required.
+
+---
+
+## 🚀 How to Run
+
+### Option 1 — Kaggle
+
+1. Open the notebook in Kaggle.
+2. Attach the **Metal Surface Defects Data** dataset.
+3. Enable GPU acceleration if available.
+4. Run the notebook from top to bottom.
+
+The notebook expects the dataset under:
+
+```text
+/kaggle/input/metal-surface-defects-data/
+```
+
+### Option 2 — Local Jupyter Environment
+
+Install the required packages:
+
+```bash
+pip install numpy pandas matplotlib scikit-learn tensorflow pillow
+```
+
+Then open:
+
+```bash
+jupyter notebook metal_surface_analysis.ipynb
+```
+
+Update the dataset path in the notebook:
+
+```python
+base_dir = 'path/to/Metal Surface Defects Data'
+```
+
+and run the cells sequentially.
+
+---
+
+## 📈 Evaluation and Visualization
+
+The notebook generates:
+
+- Sample training-image visualizations
+- Training/validation accuracy curves
+- Training/validation loss curves
+- Classification report
+- Confusion matrix
+- Single-image prediction results
+
+The training history plot is saved as:
+
+```text
+training_history_plots.png
+```
+
+---
+
+## 🔍 Key Takeaways
+
+- The project demonstrates an end-to-end CNN pipeline for automated metal surface defect classification.
+- Grayscale images are used to reduce the input representation to a single channel.
+- Data augmentation is used to increase variation in the training data.
+- Batch normalization and dropout are incorporated into the CNN.
+- Global average pooling is used instead of a large flatten-and-dense block.
+- The model successfully distinguishes several defect categories, while the reported confusion matrix shows that **Pitted** and **Scratches** remain comparatively difficult classes for this model/evaluation set.
+
+---
+
+## 🔮 Possible Future Improvements
+
+The notebook itself does not implement the following, but they are natural extensions for further development:
+
+- Transfer learning using pretrained CNN architectures
+- More systematic hyperparameter tuning
+- Early stopping and learning-rate scheduling
+- Class-weighting or additional data for difficult classes
+- Larger and more diverse test data
+- Cross-validation
+- Model explainability using Grad-CAM
+- Saving and deploying the trained model through a web or API interface
+
+---
+
+## 📜 License
+
+No specific license is included in the provided notebook. Add an appropriate license before distributing the project publicly.
+
+---
+
+## 📌 Project File
+
+The main implementation is contained in:
+
+```text
+metal_surface_analysis.ipynb
+```
