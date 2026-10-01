@@ -23,16 +23,6 @@ The model classifies images into six categories:
 
 ---
 
-## 👥 Team
-
-**Group 17**
-
-- Aman — 2301ME05
-- Sanit — 2301ME45
-- Sparsh — 2301ME47
-
----
-
 ## 🗂️ Dataset
 
 The notebook uses the **Metal Surface Defects Data** dataset in a Kaggle environment.
@@ -381,45 +371,6 @@ The current project submission primarily contains the Jupyter notebook. Model fi
 
 ---
 
-## 🚀 How to Run
-
-### Option 1 — Kaggle
-
-1. Open the notebook in Kaggle.
-2. Attach the **Metal Surface Defects Data** dataset.
-3. Enable GPU acceleration if available.
-4. Run the notebook from top to bottom.
-
-The notebook expects the dataset under:
-
-```text
-/kaggle/input/metal-surface-defects-data/
-```
-
-### Option 2 — Local Jupyter Environment
-
-Install the required packages:
-
-```bash
-pip install numpy pandas matplotlib scikit-learn tensorflow pillow
-```
-
-Then open:
-
-```bash
-jupyter notebook metal_surface_analysis.ipynb
-```
-
-Update the dataset path in the notebook:
-
-```python
-base_dir = 'path/to/Metal Surface Defects Data'
-```
-
-and run the cells sequentially.
-
----
-
 ## 📈 Evaluation and Visualization
 
 The notebook generates:
@@ -449,32 +400,3 @@ training_history_plots.png
 - The model successfully distinguishes several defect categories, while the reported confusion matrix shows that **Pitted** and **Scratches** remain comparatively difficult classes for this model/evaluation set.
 
 ---
-
-## 🔮 Possible Future Improvements
-
-The notebook itself does not implement the following, but they are natural extensions for further development:
-
-- Transfer learning using pretrained CNN architectures
-- More systematic hyperparameter tuning
-- Early stopping and learning-rate scheduling
-- Class-weighting or additional data for difficult classes
-- Larger and more diverse test data
-- Cross-validation
-- Model explainability using Grad-CAM
-- Saving and deploying the trained model through a web or API interface
-
----
-
-## 📜 License
-
-No specific license is included in the provided notebook. Add an appropriate license before distributing the project publicly.
-
----
-
-## 📌 Project File
-
-The main implementation is contained in:
-
-```text
-metal_surface_analysis.ipynb
-```
